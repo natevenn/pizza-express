@@ -1,0 +1,17 @@
+{
+  "name": "pizza-express",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "nate venn",
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "^3.0.2"
+  },
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
