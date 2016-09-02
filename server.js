@@ -1,11 +1,26 @@
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
+const generateID = require('./lib/generate-id')
 
 app.set('port', process.env.PORT || 3000);
+app.set('view engine', 'jade');
 app.locals.title = 'Pizza Express'
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static('static'));
+app.locals.pizzas = {}
 
-app.get('/', (requrest, response) => {
-  response.send('hello world');
+app.get('/', (request, response) => {
+  response.render('index');
+});
+
+app.post('/pizzas', (request, response) => {
+  id = generateID();
+
+  app.locals.pizzas[id] = request.body
+
+  response.sendStatus(201);
 });
 
 if(!module.parent) {
