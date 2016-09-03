@@ -64,9 +64,9 @@ describe('Server', () => {
     });
 
     it('should recieve and store date', (done) => {
-      var validPizza = { pizza: fixtures.validPizza }
+      var payload = { pizza: fixtures.validPizza }
 
-      this.request.post('/pizzas', { form: validPizza }, (error, response) => {
+      this.request.post('/pizzas', { form: payload }, (error, response) => {
         if(error) { done(error); }
 
         var pizzaCount = Object.keys(app.locals.pizzas).length;
@@ -75,5 +75,42 @@ describe('Server', () => {
         done();
       });
     })
+  });
+
+  describe('POST /pizzas/:id', () => {
+    beforeEach(() => {
+      app.locals.pizzas.testPizza = fixtures.validPizza;
+    });
+
+    it('should not return a 404', (done) => {
+      this.request.get('/pizzas/testPizza', (err, res) => {
+        if (err) { done(err); }
+        assert.notEqual(res.statusCode, 404);
+        done();
+      });
+    });
+
+    it('should return a page that has a title of a pizza', (done) => {
+      var pizza = app.locals.pizzas.testPizza;
+
+      this.request.get('/pizzas/testPizza', (err, res) => {
+        if(err) { done(err); }
+        assert(res.body.includes(pizza.name), `"${res.body}" does not include "${pizza.name}".`);
+        done();
+      })
+    });
+
+    it('should return a list of toppings', (done) => {
+      var pizza = app.locals.pizzas.testPizza = fixtures.validPizza
+      var pizzaToppings = pizza.toppings
+
+      this.request.get('/pizzas/testPizza', (err, res) => {
+        if (err) { done(err); }
+        pizzaToppings.forEach(function(topping) {
+          assert(res.body.includes(topping), `"${topping}" is not included.`);
+        });
+        done();
+      });
+    });
   });
 });
