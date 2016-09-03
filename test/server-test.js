@@ -75,6 +75,18 @@ describe('Server', () => {
         done();
       });
     })
+
+    it('should redirect user to their pizza', (done) => {
+      var payload = {pizza: fixtures.validPizza};
+
+      this.request.post('/pizzas', { form: payload}, (error, response) => {
+        if(error) { done(error); }
+        var newPizzaId = Object.keys(app.locals.pizzas)[0];
+        //console.log('location', response.headers.etag)
+        assert.equal(response.headers.location, '/pizzas/' + newPizzaId)
+        done();
+      });
+    });
   });
 
   describe('POST /pizzas/:id', () => {
